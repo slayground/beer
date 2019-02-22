@@ -1,10 +1,13 @@
+// Load required packages
 var mongoose = require('mongoose');
 
-// Beer Schema
-var BeerSchema = new mongoose.Schema({
-    name: String,
-    type: String,
-    quantity: Number
-})
+// Define our beer schema
+var BeerSchema   = new mongoose.Schema({
+  name: String,
+  type: String,
+  quantity: Number,
+  userId: String
+});
 
+// Export the Mongoose model
 module.exports = mongoose.model('Beer', BeerSchema);

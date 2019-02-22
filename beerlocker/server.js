@@ -13,13 +13,13 @@ app.use(bodyParser.urlencoded({
 
 mongoose.connect('mongodb://localhost/beerlocker');
 
-router.get('/', function(req, res) {
+router.get('/', (req, res) => {
     res.json("Hold my beer.")
 })
 
 var beersRoute = router.route('/beers');
 
-beersRoute.post(function(req, res) {
+beersRoute.post((req, res) => {
     var beer = new Beer();
     
     beer.name = req.body.name;
@@ -35,14 +35,50 @@ beersRoute.post(function(req, res) {
     })
 })
 
-beersRoute.get(function(req, res) {
-    Beer.find(function(err, allBeers) {
+beersRoute.get((req, res) => {
+    Beer.find((err, allBeers) => {
         if(err)
             res.send(err);
 
         res.json(allBeers);
     })
 })
+
+var beerRoute = router.route('/beers/:beer_id');
+
+beerRoute.get((req, res) => {
+    Beer.findById(req.params.beer_id, (err, beer) => {
+        if (err)
+            res.send(err)
+        
+        res.json(beer);
+    })
+})
+
+beerRoute.put((req, res) => {
+    Beer.findById(req.params.beer_id, (err, beer) => {
+        if (err)
+            res.send(err)
+
+        beer.quantity = req.body.quantity;
+
+        beer.save(err => {
+            if (err)
+                res.send(err)
+
+            res.json(beer)
+        })
+    })
+})
+
+beerRoute.delete((req, res) => {
+    Beer.findByIdAndDelete(req.params.beer_id, (err) => {
+        if (err)
+            res.send(err);
+
+        res.json({ message: `Beer ${req.params.beer_id} removed from the locker.`})
+    })
+}) 
 
 app.use('/api', router);
 
